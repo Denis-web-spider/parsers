@@ -11,8 +11,6 @@ import os
 import requests
 import shutil
 
-start = time.time()
-
 class Parser:
     '''
     Парсинг сайта 'https://diamarka.com/'. Магазин аптечных товаров.
@@ -150,7 +148,7 @@ class Parser:
             pass
 
         try:
-            img_url = self.root_url + soup.find('div', {'class': 'slidest'}).img['src']
+            img_url = self.root_url + soup.find('div', {'class': 'slides'}).img['src']
             self.info[catalog_name][category_name][str(product_number)]['Фото'] = '{}.jpg'.format(product_number)
 
             img = requests.get(img_url, stream=True)
@@ -158,7 +156,7 @@ class Parser:
 
             with open(r'{}\{}.jpg'.format(self.imgs_folder, product_number), 'wb') as image_file:
                 shutil.copyfileobj(img.raw, image_file)
-        except:
+        except :
             pass
 
     def save_in_json(self):
@@ -241,7 +239,7 @@ class Parser:
                         pass
 
                     try:
-                        value = self.info[catalog_name][category_name][product_number]['Описание']
+                        value = self.info[catalog_name][category_name][product_number]['Описание'].strip()
                         excel.cell(row=row, column=6, value=value)
                     except:
                         pass
@@ -329,5 +327,3 @@ class Parser:
 
 parser = Parser()
 parser.execute()
-
-print(time.time() - start)
